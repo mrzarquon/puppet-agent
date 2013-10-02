@@ -4,6 +4,7 @@ class agent (
   $puppet_certname = $::fqdn,
   $puppet_environment = 'production',
   $puppet_start = true,
+  $puppet_symlink = true,
 ) {
   
   file { '/etc/puppetlabs/puppet/puppet.conf':
@@ -19,6 +20,17 @@ class agent (
       ensure    => running,
       enable    => true,
       subscribe => File['/etc/puppetlabs/puppet/puppet.conf'],
+    }
+  }
+
+  if $puppet_symlink == true {
+    file { '/usr/local/bin/puppet':
+      ensure => link,
+      target => '/opt/puppet/bin/puppet',
+    }
+    file { '/usr/local/bin/facter':
+      ensure => link,
+      target => 'opt/puppet/bin/facter',
     }
   }
 
